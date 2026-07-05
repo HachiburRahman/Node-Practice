@@ -1,5 +1,5 @@
 const express=require('express')
-const {MongoClient,ServerApiVersion}=require('mongodb')
+const {MongoClient,ServerApiVersion, ObjectId}=require('mongodb')
 const cors=require('cors')
 const app=express();
 const port =process.env.PORT || 3000
@@ -35,10 +35,43 @@ app.get('/',(req,res)=>{
             res.send(result)
         })
 
+        app.get('/users/:id',async(req,res)=>{
+            const id=req.params.id;
+            const query={_id:new ObjectId(id)}
+            const result=await userCollection.findOne(query);
+            res.send(result)
+        })
+
         app.post('/users',async(req,res)=>{
             const user=req.body;
             // console.log(user)
             const result= await userCollection.insertOne(user)
+            res.send(result)
+        })
+
+        app.patch('/update/:id',async(req,res)=>{
+            const id=req.params.id;
+            const user=req.body;
+            // console.log(id,body)
+            const query={_id:new ObjectId(id)}
+            const update={
+                $set:{
+                  name:user.name,
+                  email:user.email
+                }
+            }
+            const option={}
+            const result=await userCollection.updateOne(query,update,option)
+            res.send(result)
+        })
+
+        app.delete('/users/:id',async(req,res)=>{
+            const id =req.params.id;
+            // console.log(id);
+            const query={
+                _id:new ObjectId(id)
+            }
+            const result=await userCollection.deleteOne(query)
             res.send(result)
         })
 

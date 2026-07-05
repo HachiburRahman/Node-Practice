@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { use, useState } from 'react';
+import { Link } from 'react-router';
 
 const Users = ({userPromise}) => {
      const initialUsers=use(userPromise)
@@ -28,6 +29,22 @@ const Users = ({userPromise}) => {
             setUsers(totalUsers)
         })
     }
+
+    const handleDeleteUser=(id)=>{
+        //  console.log(id)
+        fetch(`http://localhost:3000/users/${id}`,{
+            method:'DELETE'
+        })
+        .then(res=>res.json())
+        .then(data=>{
+            // console.log(data)
+            alert('User deleted successfully')
+            const remaining=users.filter(user=>user._id!==id)
+            setUsers(remaining)
+        })
+
+        // fetch(`http://localhost:3000/users/${}`)
+    }
     return (
         <div>
             <form onSubmit={handleAddUser}>
@@ -39,7 +56,11 @@ const Users = ({userPromise}) => {
             </form>
             <p>--------------------------</p>
             {
-                users.map(user=><p key={user._id}>Name: {user.name} Email: {user.email}</p>)
+                users.map(user=><p key={user._id}>Name: {user.name} Email: {user.email}
+                <button onClick={()=>handleDeleteUser(user._id)}>x</button>
+                <Link to={`/users/${user._id}`}>Details</Link>
+                <Link to={`/update/${user._id}`}>Edit</Link>
+                </p>)
             }
         </div>
     );

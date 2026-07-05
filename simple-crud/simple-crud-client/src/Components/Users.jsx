@@ -1,4 +1,5 @@
 import React, { use, useState } from 'react';
+import { Link } from 'react-router';
 
 
 
@@ -25,7 +26,7 @@ const Users = ({usersPromise}) => {
         })
         .then(res=>res.json())
         .then(data=>{
-            console.log("Data from mongo",data)
+            // console.log("Data from mongo",data)
             e.target.reset();
             if(data.insertedId){
                newUser._id=data.insertedId;
@@ -43,7 +44,7 @@ const Users = ({usersPromise}) => {
     })
     .then(res=>res.json())
     .then(data=>{
-        console.log(data)
+        // console.log(data)
         if(data.deletedCount>0){
             const remaining=users.filter(user=>user._id!==id)
             setUsers(remaining)
@@ -65,7 +66,10 @@ const Users = ({usersPromise}) => {
             <div>
                 {
                     users.map(user=><p key={user._id}>Name: {user.name} Email: {user.email} 
-                    <button onClick={()=>handleDeleteUser(user._id)}>X</button></p>)
+                    <button onClick={()=>handleDeleteUser(user._id)}>X</button>
+                    <Link to={`/users/${user._id}`}>Details</Link>
+                    <Link to={`/update/${user._id}`}>Edit</Link>
+                    </p>)
                 }
             </div>
         </div>

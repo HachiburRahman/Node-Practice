@@ -37,6 +37,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/users/:id",async(req,res)=>{
+      const id =req.params.id;
+      const query={_id:new ObjectId(id)}
+      const result=await usersCollection.findOne(query)
+      res.send(result)
+    })
+
     // Add a user
     app.post("/users", async (req, res) => {
       const newUser = req.body;
@@ -53,6 +60,23 @@ async function run() {
     };
       // console.log(query)
       const result = await usersCollection.deleteOne(query);
+      res.send(result)
+    })
+
+    app.patch('/users/:id',async(req,res)=>{
+      const id =req.params.id;
+      const updatedUser=req.body;
+      // console.log(id,updatedUser);
+      const query={_id:new ObjectId(id)}
+      const update={
+        $set:{
+          name:updatedUser.name,
+          email:updatedUser.email
+
+        }
+      }
+      const option={}
+      const result=await usersCollection.updateOne(query,update,option);
       res.send(result)
     })
   
